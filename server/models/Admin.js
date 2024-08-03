@@ -9,23 +9,24 @@ const AdminSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false } // Distinguishes between admin and regular users
 });
 
-// Hash the password before saving
-AdminSchema.pre('save', async function(next) {
-  if (this.isModified('password') || this.isNew) { // Hash if password is new or modified
-    try {
-      this.password = await bcrypt.hash(this.password, 10);
-    } catch (err) {
-      return next(err);
-    }
+// Method to hash a plain password
+AdminSchema.statics.hashPassword = async function(password) {
+  try {
+    console.log('Hashing password:', password); // Debugging line
+    return await bcrypt.hash(password, 10);
+  } catch (err) {
+    console.error('Error hashing password:', err); // Debugging line
+    throw new Error('Error hashing password');
   }
-  next();
-});
+};
 
 // Method to compare passwords
 AdminSchema.methods.comparePassword = async function(candidatePassword) {
   try {
-    // Compare the candidate password with the stored hashed password
+    console.log('Comparing password:', candidatePassword); // Debugging line
+    console.log('Stored hashed password:', this.password); // Debugging line
     const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    console.log('Password match result:', isMatch); // Debugging line
     return isMatch;
   } catch (err) {
     console.error('Error comparing passwords:', err); // Debugging line
@@ -34,4 +35,3 @@ AdminSchema.methods.comparePassword = async function(candidatePassword) {
 };
 
 module.exports = mongoose.model('Admin', AdminSchema);
-  

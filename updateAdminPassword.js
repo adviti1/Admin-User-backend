@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const Admin = require('./server/models/Admin'); // Adjust the path as needed
 
 const mongoURI = 'mongodb://localhost:27017/node_crud'; // Update with your actual database name
@@ -8,8 +7,8 @@ mongoose.connect(mongoURI)
     .then(async () => {
         console.log('MongoDB connected');
 
-        const email = 'admin@example.com'; // Email of the admin to update
-        const newPassword = 'newadminpassword'; // New plain text password
+        const email = 'admin@example.com'; // The email of the admin to update
+        const newPlainPassword = 'newadminpassword'; // New plain text password
 
         try {
             // Find the admin by email
@@ -20,15 +19,13 @@ mongoose.connect(mongoURI)
                 return;
             }
 
-            // Hash the new password
-            const salt = await bcrypt.genSalt(10);
-            admin.password = await bcrypt.hash(newPassword, salt);
-
-            // Save the updated admin
+            // Hash the new password and update the admin document
+            admin.password = await Admin.hashPassword(newPlainPassword);
             await admin.save();
-            console.log('Admin password updated successfully:', admin);
+
+            console.log('Admin password updated successfully');
         } catch (err) {
-            console.error('Error updating admin:', err);
+            console.error('Error updating admin password:', err);
         } finally {
             mongoose.connection.close();
         }
