@@ -1,0 +1,5 @@
+{
+    "watch": ["server", "views"],
+    "ignore": ["server/**/*.test.js", "node_modules"]
+  }
+  

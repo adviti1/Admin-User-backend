@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css"
+        integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.datatables.net/v/bs4/dt-2.1.3/datatables.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a href="/" class="navbar-brand"><i class="fas fa-code me-2"></i>DCodeMania</a>
+            <button class="navbar-toggler" data-bs-target="#my-nav" data-bs-toggle="collapse" aria-controls="my-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="my-nav" class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/add"><i class="fas fa-user-plus me-1"></i>Add User</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"><i class="fas fa-globe me-1"></i>About</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"><i class="fas fa-envelope me-1"></i>Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row my-4">
+                <div class="col-lg-12">
+                    <% if (message) { %>
+                        <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+                            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button> 
+                            <strong><%= message.message %></strong>
+                        </div>
+                    <% } %>
+                    
+                    <% if (user.isAdmin) { %>
+                        <!-- Admin View: Display CRUD operations -->
+                        <div class="table-responsive">
+                            <% if (users && users.length > 0) { %>
+                                <table class="table table-striped text-center my-3">
+                                    <thead>
+                                        <tr class="table-dark">
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach((row, index) => { %>
+                                            <tr>
+                                                <td><%= index + 1 %></td>
+                                                <td><%= row.name %></td>
+                                                <td><%= row.email %></td>
+                                                <td><%= row.phone %></td>
+                                                <td>
+                                                    <a href="/edit/<%= row._id %>" class="text-success"><i class="fas fa-edit mx-1"></i></a>
+                                                    <a href="/delete/<%= row._id %>" class="text-danger"><i class="fas fa-trash mx-1"></i></a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            <% } else { %>
+                                <h1 class="text-center text-secondary mt-5"> No User found in the database!</h1>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <!-- Regular User View: Show limited content -->
+                        <h1 class="text-center mt-5">Welcome, <%= user.name %></h1>
+                        <p class="text-center">You have limited access. Please contact an admin for more information.</p>
+                        <!-- Optionally, display some user-specific info or other content here -->
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"
+    integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.datatables.net/v/bs4/dt-2.1.3/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("table").DataTable({
+            order: [0, 'desc']
+        });
+    });
+    
+</script>
+
+</body>
+
